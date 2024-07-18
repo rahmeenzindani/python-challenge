@@ -1,1 +1,73 @@
+import os
+import csv
+
+
+csvpath = os.path.join("Resources", "budget_data.csv")
+
+
+total_months = 0
+total_profit_loss = 0
+previous_profit_loss = 0
+profit_loss_change = 0
+profit_loss_changes = []
+months = []
+
+
+with open(csvpath, newline="") as csvfile:
+    csvreaders = csv.reader(csvfile, delimiter=",")
+
+  
+    csv_header = next(csvreaders)
+
+    
+    for row in csvreaders:
+      
+        total_months += 1
+
+        
+        total_profit_loss += int(row[1])
+
+       
+        if total_months == 1:
+            
+            previous_profit_loss = int(row[1])
+        else:
+            profit_loss_change = int(row[1]) - previous_profit_loss
+            profit_loss_changes.append(profit_loss_change)
+            months.append(row[0])
+            previous_profit_loss = int(row[1])
+
+
+average_change = round(sum(profit_loss_changes) / len(profit_loss_changes), 2)
+
+
+greatest_increase = max(profit_loss_changes)
+greatest_increase_index = profit_loss_changes.index(greatest_increase)
+greatest_increase_month = months[greatest_increase_index]
+
+greatest_decrease = min(profit_loss_changes)
+greatest_decrease_index = profit_loss_changes.index(greatest_decrease)
+greatest_decrease_month = months[greatest_decrease_index]
+
+
+print("Financial Analysis")
+print("----------------------------")
+print(f"Total Months: {total_months}")
+print(f"Total: ${total_profit_loss}")
+print(f"Average Change: ${average_change}")
+print(f"Greatest Increase in Profits: {greatest_increase_month} (${greatest_increase})")
+print(f"Greatest Decrease in Profits: {greatest_decrease_month} (${greatest_decrease})")
+
+
+output_file = os.path.join("analysis", "financial_analysis.txt")
+with open(output_file, "w") as file:
+    file.write("Financial Analysis\n")
+    file.write("----------------------------\n")
+    file.write(f"Total Months: {total_months}\n")
+    file.write(f"Total: ${total_profit_loss}\n")
+    file.write(f"Average Change: ${average_change}\n")
+    file.write(f"Greatest Increase in Profits: {greatest_increase_month} (${greatest_increase})\n")
+    file.write(f"Greatest Decrease in Profits: {greatest_decrease_month} (${greatest_decrease})\n")
+
+print(f"Financial analysis has been saved to {output_file}")
 
